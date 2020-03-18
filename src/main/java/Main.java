@@ -5,8 +5,19 @@ public class Main extends PApplet {
         Main.main("Main");
     }
 
+
+
     public void draw(){
         background(200);
 
     }
+
+    public void setup() {
+        size(600,600);
+
+    }
+
+
+
+
 }
