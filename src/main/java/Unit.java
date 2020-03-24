@@ -1,3 +1,5 @@
+import static java.lang.Integer.signum;
+
 public class Unit {
     //Baseline stats that all units will need, as of now the idea is that extra stats might just be in the constructor,
     // although now that i think of it we might just want to initialize all the possible stats,
@@ -22,16 +24,20 @@ public class Unit {
         currentHp = hp;
     }
 
-    void nextMove(){
-        attack();
-        //move();
+    int[] nextMove(Unit target){
+        int[] conclusion = new int[3];          //conclusion[0] = xDestination, conclusion[1] = yDestination, conclusion[2] = damage done.
+        if((-1-range) < posX-target.posX && posX-target.posX < (range+1) && (-1-range) < posY-target.posY && posY-target.posY < (range+1)){
+            target.currentHp -= damage();
+            //attackAnimation(posX, posY, target.posX, target.posY);    TODO
+        } else {
+            posX += signum(target.posX);
+            posY += signum(target.posY);
+            //moveAnimation(posX, posY, signum(target.posX), signum(target.posY); TODO
+        }
+        return conclusion;
     }
 
-    void attack(){
-        for(int i = 0; i < 1+(2*range); i++){    //First i wanna check the sorrounding tiles to see if there are enemies withing range
-            for(int j = 0; j < 1+(2*range); j++){
-                //dostuff;
-            }
-        }
+    int damage(){
+        return damage;
     }
 }
