@@ -2,6 +2,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main extends PApplet {
     public static void main(String[] args) {
@@ -44,8 +45,15 @@ public class Main extends PApplet {
     public void drawUnits(){
         for(Unit currentUnit : units){
             image(unitImage,currentUnit.posX,currentUnit.posY);
-            System.out.println("units drawn");
         }
+    }
+    public void mouseClicked(){
+        units.add(unitFromParent(units.get(units.size()-1)));
+        System.out.println(Arrays.toString(units.get(units.size() - 1).statWeights));
+        System.out.println(units.get(units.size() - 1).range);
+        System.out.println(units.get(units.size() - 1).attackSpeed);
+        System.out.println(units.get(units.size() - 1).hp);
+        System.out.println(units.get(units.size() - 1).damage);
     }
 
     public void loadImages(){
@@ -53,7 +61,7 @@ public class Main extends PApplet {
     }
 
     public void createUnit() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
             Unit unit2 = new Unit();
             unit2.UnitGeneric();
             units.add(unit2);
@@ -64,5 +72,10 @@ public class Main extends PApplet {
             Unit currentUnit = units.get(i);
             currentUnit.loadUnit(100,100*i);
         }
+    }
+    public Unit unitFromParent(Unit parent){
+        Unit newUnit = new Unit();
+        newUnit.UnitWeights(parent.geneticAlgorithm(parent.statWeights));
+        return newUnit;
     }
 }
