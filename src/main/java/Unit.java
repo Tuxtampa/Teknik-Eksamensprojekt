@@ -34,17 +34,17 @@ public class Unit {
         currentHp = hp;
     }
 
-    int[] nextMove(Unit target){
-        int[] conclusion = new int[3];          //conclusion[0] = xDestination, conclusion[1] = yDestination, conclusion[2] = damage done.
+    void nextMove(Unit target){
         if((-1-range) < posX-target.posX && posX-target.posX < (range+1) && (-1-range) < posY-target.posY && posY-target.posY < (range+1)){
+            System.out.println("attacking");
             target.currentHp -= damage();
             //attackAnimation(posX, posY, target.posX, target.posY);    TODO
         } else {
+            System.out.println("moving");
             posX += signum(target.posX);
             posY += signum(target.posY);
             //moveAnimation(posX, posY, signum(target.posX), signum(target.posY); TODO
         }
-        return conclusion;
 }
 
     float damage(){

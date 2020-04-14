@@ -17,18 +17,31 @@ public class Main extends PApplet {
     public void draw(){
         //background(200);
         bd.Boardd();
-        if((millis() - lastTick) > millisPerTick)tick();
+        //if((millis() - lastTick) > millisPerTick)tick();
     }
 
     public void tick(){
         System.out.println("tick" + frameCount%(10*frameRate) + " There are " + units.size() + " units");
         for(Unit currentUnit : units){
-            //Unit target = getNearbyUnits(currentUnit.posX, currentUnit.posY);
-            //int[] move = currentUnit.nextMove(target);
-            //bd.executeMove(move);
+            Unit target = getNearbyUnits(currentUnit.posX, currentUnit.posY);
+            if(target != null){
+                System.out.println("move");
+                currentUnit.nextMove(target);
+            }
         }
         lastTick = millis();
         drawUnits();
+        System.out.println(units.get(0).currentHp);
+    }
+
+    public Unit getNearbyUnits(int startX, int startY){
+            for(int i = 0; i < 100; i++){
+                Unit tempUnit = units.get((int) Math.floor(Math.random()*units.size()));
+                if(tempUnit.posX != startX || tempUnit.posY != startY){
+                    return tempUnit;
+                }
+            }
+            return null;
     }
 
     public void settings() {
@@ -54,6 +67,9 @@ public class Main extends PApplet {
         System.out.println(units.get(units.size() - 1).attackSpeed);
         System.out.println(units.get(units.size() - 1).hp);
         System.out.println(units.get(units.size() - 1).damage);
+    }
+    public void keyPressed(){
+        if(key == 't')tick();
     }
 
     public void loadImages(){
