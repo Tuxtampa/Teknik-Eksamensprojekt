@@ -16,6 +16,7 @@ public class Unit {
     int posY = 1;
     int team;
     int ticksToNextMove = 0;
+    boolean moved = false;                     //Used so units don't move more than once per tick.
     float[] statWeights = {1,1,1,1};  //statWeights[0] = hp, statWeights[1] = damage, statWeights[2] = attackSpeed, statWeights[3] = range.
 
     void UnitGeneric(){
@@ -47,11 +48,14 @@ public class Unit {
             System.out.println(target.currentHp);
             //attackAnimation(posX, posY, target.posX, target.posY);    TODO
         } else {
-            if(posY < target.posY){
+            moved = false;
+            if(posY > target.posY){
+                System.out.print("Top,Mid,Down");
                 topFree(tiles, tempTeam);
                 midFree(tiles, tempTeam);
                 downFree(tiles, tempTeam);
             } else if (posY == target.posY){
+                System.out.print("Mid,Top,Down");
                 midFree(tiles, tempTeam);
                 if (posY > 4){
                     topFree(tiles, tempTeam);
@@ -59,6 +63,7 @@ public class Unit {
                     downFree(tiles, tempTeam);
                 }
             } else {
+                System.out.print("Down,Mid,Top");
                 downFree(tiles, tempTeam);
                 midFree(tiles, tempTeam);
                 topFree(tiles, tempTeam);
@@ -69,27 +74,40 @@ public class Unit {
         }
 
     void topFree(HashMap<String,String> tiles, int tempTeam) {
-        int tempPosX = posX-tempTeam;
-        int tempPosY = posY-1;
-        if (tiles.get(tempPosX + "," + tempPosY).equals("0")){
-            posY = tempPosY;
-            posX = tempPosX;
+        if(!moved) {
+            int tempPosX = posX - tempTeam;
+            int tempPosY = posY - 1;
+            relocate(tiles, tempPosX, tempPosY);
+            System.out.print("topFree excuted");
         }
     }
     void midFree(HashMap<String,String> tiles, int tempTeam) {
-        int tempPosX = posX-tempTeam;
-        int tempPosY = posY;
-        if (tiles.get(tempPosX + "," + tempPosY).equals("0")){
-            posY = tempPosY;
-            posX = tempPosX;
+        if(!moved) {
+            int tempPosX = posX - tempTeam;
+            int tempPosY = posY;
+            relocate(tiles, tempPosX, tempPosY);
+            System.out.print("midFree excuted");
         }
     }
     void downFree(HashMap<String,String> tiles, int tempTeam) {
-        int tempPosX = posX-tempTeam;
-        int tempPosY = posY+1;
+        if(!moved) {
+            int tempPosX = posX - tempTeam;
+            int tempPosY = posY + 1;
+            relocate(tiles, tempPosX, tempPosY);
+            System.out.print("downFree excuted");
+        }
+    }
+
+    private void relocate(HashMap<String, String> tiles, int tempPosX, int tempPosY) {
+        System.out.print("getting " + tempPosX + "," + tempPosY);
         if (tiles.get(tempPosX + "," + tempPosY).equals("0")){
+            tiles.remove(posY + "," + posX);
+            tiles.put(posY + "," + posX, "0");
             posY = tempPosY;
             posX = tempPosX;
+            tiles.remove(tempPosX + "," + tempPosY);
+            tiles.put(tempPosX + "," + tempPosY, "1");
+            moved = true;
         }
     }
 
