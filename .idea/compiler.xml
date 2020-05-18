@@ -9,6 +9,6 @@
         <module name="Teknik-Eksamensprojekt" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="13" />
   </component>
 </project>

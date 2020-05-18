@@ -11,6 +11,10 @@ public class Unit {
     float currentHp;
     float damage;
     float attackSpeed;            //hundredths of a second just to keep it an integer, might be stupid but whatever.
+    String faction;
+    String type;
+    String facing;
+    int level = 1;
     int range = 1;
     int posX = 1;
     int posY = 1;
@@ -23,6 +27,15 @@ public class Unit {
         hp = 50;
         damage = 5;
         attackSpeed = 100;
+    }
+
+    void UnitFull(String tempFaction, String tempType, String tempFacing){
+        hp = 50;
+        damage = 5;
+        attackSpeed = 100;
+        faction = tempFaction;
+        type = tempType;
+        facing = tempFacing;
     }
 
     void UnitWeights(float[] importedWeights){
@@ -50,12 +63,12 @@ public class Unit {
         } else {
             moved = false;
             if(posY > target.posY){
-                System.out.print("Top,Mid,Down");
+                System.out.println("Top,Mid,Down");
                 topFree(tiles, tempTeam);
                 midFree(tiles, tempTeam);
                 downFree(tiles, tempTeam);
             } else if (posY == target.posY){
-                System.out.print("Mid,Top,Down");
+                System.out.println("Mid,Top,Down");
                 midFree(tiles, tempTeam);
                 if (posY > 4){
                     topFree(tiles, tempTeam);
@@ -63,7 +76,7 @@ public class Unit {
                     downFree(tiles, tempTeam);
                 }
             } else {
-                System.out.print("Down,Mid,Top");
+                System.out.println("Down,Mid,Top");
                 downFree(tiles, tempTeam);
                 midFree(tiles, tempTeam);
                 topFree(tiles, tempTeam);
@@ -78,7 +91,7 @@ public class Unit {
             int tempPosX = posX - tempTeam;
             int tempPosY = posY - 1;
             relocate(tiles, tempPosX, tempPosY);
-            System.out.print("topFree excuted");
+            System.out.println("topFree excuted");
         }
     }
     void midFree(HashMap<String,String> tiles, int tempTeam) {
@@ -86,7 +99,7 @@ public class Unit {
             int tempPosX = posX - tempTeam;
             int tempPosY = posY;
             relocate(tiles, tempPosX, tempPosY);
-            System.out.print("midFree excuted");
+            System.out.println("midFree excuted");
         }
     }
     void downFree(HashMap<String,String> tiles, int tempTeam) {
@@ -94,19 +107,19 @@ public class Unit {
             int tempPosX = posX - tempTeam;
             int tempPosY = posY + 1;
             relocate(tiles, tempPosX, tempPosY);
-            System.out.print("downFree excuted");
+            System.out.println("downFree excuted");
         }
     }
 
     private void relocate(HashMap<String, String> tiles, int tempPosX, int tempPosY) {
-        System.out.print("getting " + tempPosX + "," + tempPosY);
+        System.out.println("getting " + tempPosX + "," + tempPosY);
         if (tiles.get(tempPosX + "," + tempPosY).equals("0")){
-            tiles.remove(posY + "," + posX);
-            tiles.put(posY + "," + posX, "0");
+            tiles.remove(posX + "," + posY);
+            tiles.put(posX + "," + posY, "0");
             posY = tempPosY;
             posX = tempPosX;
             tiles.remove(tempPosX + "," + tempPosY);
-            tiles.put(tempPosX + "," + tempPosY, "1");
+            tiles.put(tempPosX + "," + tempPosY, String.valueOf(Integer.signum(team)+1));
             moved = true;
         }
     }

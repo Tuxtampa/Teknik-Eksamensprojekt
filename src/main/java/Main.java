@@ -1,11 +1,9 @@
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.sound.SoundFile;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 public class Main extends PApplet {
     public static void main(String[] args) {
@@ -20,22 +18,28 @@ public class Main extends PApplet {
     Board bd = new Board();
     int millisPerTick = 1000;
     int lastTick = 0;
-    float xTiles = 8;
-    float yTiles = 8;
+    float xTiles = 10;
+    float yTiles = 6;
+    float xTileSpace = 1000;
+    int yTileSpace = 600;
     PImage unitImage = null;
+    SoundFile sound1;
 
     public void draw(){
         //background(200);
-        bd.Boardd();
+        bd.Board();
         tileLines();
         //if((millis() - lastTick) > millisPerTick)tick();
     }
 
     private void tileLines() {
-        for(int i = 1; i < xTiles; i++) {
-            line(width / xTiles*i, 0, width / xTiles*i, height);
-            line(0, 0+(height/yTiles*i), width, 0+(height/yTiles*i));
+        translate((width-xTileSpace)/2f, (height-yTileSpace)/2f );
+        for(int i = 0; i < xTiles; i++) {
+            line(xTileSpace / xTiles*i, 0, xTileSpace / xTiles*i, yTileSpace);
+            line(0, 0+(yTileSpace/yTiles*i), xTileSpace, 0+(yTileSpace/yTiles*i));
         }
+        line(xTileSpace,0,xTileSpace,yTileSpace);
+        translate(-(width-xTileSpace)/2f,-(height-yTileSpace)/2f);
     }
 
     public void tick(){
@@ -50,7 +54,7 @@ public class Main extends PApplet {
 
     private void Action(ArrayList<Unit> unitsTeam2InPlay) {
         for(Unit currentUnit : unitsTeam2InPlay){
-            if(currentUnit.currentHp < 0) unitsTeam2InPlay.remove(currentUnit);
+            //if(currentUnit.currentHp < 0) unitsTeam2InPlay.remove(currentUnit);
             if(currentUnit.ticksToNextMove < 1) {
                 Unit target = getNearbyUnits(currentUnit);
                 if (target != null) {
@@ -63,46 +67,31 @@ public class Main extends PApplet {
         }
     }
 
-    /*
-    public Unit getNearbyUnits(Unit currentunit){
-        try {
-            for (int i = 0; i < 100; i++) {
-                Unit tempUnit = unitsTeam1InPlay.get((int) Math.floor(Math.random() * unitsTeam1InPlay.size()));
-                if (tempUnit.posX != currentunit.posX || tempUnit.posY != currentunit.posY) {
-                    if (tempUnit.team != currentunit.team) return tempUnit;
-                }
-                Unit tempUnit2 = unitsTeam2InPlay.get((int) Math.floor(Math.random() * unitsTeam2InPlay.size()));
-                if (tempUnit2.posX != currentunit.posX || tempUnit2.posY != currentunit.posY) {
-                    if (tempUnit2.team != currentunit.team) return tempUnit2;
-                }
-            }
-            return null;
-        } catch (IndexOutOfBoundsException ie){
-            return null;
-        }
-    }
-     */
-
     public Unit getNearbyUnits(Unit currentunit){
         Unit returnUnit = null;
         try {
             double closestDistance = 100;
             int endX;
             int endY;
-                for(int i = -8; i < 8; i++){
-                    for(int k = -8; k < 8; k++){
-                        //System.out.println("the position currently considered is: " + (currentunit.posX-1+k) + "," + (currentunit.posY-1+i));
-                        if(tiles.get((currentunit.posX-1+k) + "," + (currentunit.posY-1+i)).equals("1")){
+                for(int i = -12; i < 12; i++){
+                    for(int k = -12; k < 12; k++){
+                        //System.out.println("Checking if " + tiles.get((currentunit.posX-1+k) + "," + (currentunit.posY-1+i)) + " is the same as " + (3-(Integer.signum(currentunit.team)+1)) );
+                        if(tiles.get((currentunit.posX-1+k) + "," + (currentunit.posY-1+i)).equals(String.valueOf(3-(Integer.signum(currentunit.team)+1)))){
                             double tempDist = Math.sqrt(Math.pow(k-1, 2) + Math.pow(i-1,2));
+                            System.out.println((currentunit.posX-1+k) + "," + (currentunit.posY-1+i) +" is " + tempDist + " away");
                             if(tempDist < closestDistance){
                                 endX = (currentunit.posX-1+k);
+                                System.out.println("endX and hopefully also endY changed");
                                 endY = (currentunit.posY-1+i);
+                                System.out.println("Unit " + currentunit.posX + "," + currentunit.posY + " Is looking for a unit in " + endX + "," + endY);
+                                closestDistance = tempDist;
                                 returnUnit = findUnit(endX,endY, (int) Math.signum(currentunit.team-1));
                             }
                         }
                     }
                 }
         } catch (IndexOutOfBoundsException ie){
+            ie.printStackTrace();
             System.out.println("REEEEEEEEEEEEEEEEEE");
             return null;
         }
@@ -111,7 +100,7 @@ public class Main extends PApplet {
 
     public Unit findUnit(int posX, int posY, int desiredTeam){
         Unit returnUnit = null;
-        System.out.print("Desiredteam is " + desiredTeam);
+        System.out.println("Desiredteam is " + desiredTeam);
         if (desiredTeam == 1) {
             for (Unit unit : unitsTeam1InPlay) {
                 if (unit.posY == posY && unit.posX == posX) {
@@ -139,24 +128,30 @@ public class Main extends PApplet {
     }
 
     public void settings() {
-        size(600,600);
+        fullScreen();
     }
 
     public void setup(){
-        loadImages();
+        //loadImages();
         fillTileBoundaries();
         fillTilesCenter();
+        loadSoundFiles();
         System.out.println("Setup ran");
+    }
+
+    private void loadSoundFiles() {
+        SoundFile sound1 = new SoundFile(this,"testSound.mp3");
+        sound1.play();
     }
 
     public void drawUnits(){
         background(125);
         tileLines();
         for(Unit currentUnit : unitsTeam1InPlay){
-            image(unitImage,currentUnit.posX*(width/xTiles),currentUnit.posY*(height/yTiles));
+            image(loadImage2(currentUnit.faction + currentUnit.type + currentUnit.facing + currentUnit.level),currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f),currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f));
         }
         for(Unit currentUnit : unitsTeam2InPlay){
-            image(unitImage,currentUnit.posX*(width/xTiles),currentUnit.posY*(height/yTiles));
+            image(loadImage2(currentUnit.faction + currentUnit.type + currentUnit.facing + currentUnit.level),currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f),currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f));
         }
     }
 
@@ -168,22 +163,37 @@ public class Main extends PApplet {
         }
         if(key == '1')createUnit(1);
         if(key == '2')createUnit(2);
+        if(key == '3'){
+            for(Unit unit : unitsTeam1){
+                unitFromParent(unit);
+            }
+            for(Unit unit : unitsTeam2){
+                unitFromParent(unit);
+            }
+        }
+        if(key == '4'){
+            sound1.play();
+        }
     }
 
-    public void loadImages(){
-        unitImage = loadImage("Images\\placeholder.PNG");
-    }
 
     public void createUnit(int team) {
         for (int i = 0; i < 1; i++) {
             Unit unit2 = new Unit();
-            unit2.UnitGeneric();
-            if(team == 1)unitsTeam1.add(unit2);
-            if(team == 2)unitsTeam2.add(unit2);
+            if(team == 1){
+                unit2.UnitFull("tree", "dude", "left");
+                unitsTeam1.add(unit2);
+            }
+            if(team == 2){
+                unit2.UnitFull("tree", "dude", "right");
+                unitsTeam2.add(unit2);
+            }
         }
         System.out.print("Unit created for team " + team);
     }
     public void loadUnits(){
+        fillTileBoundaries();
+        fillTilesCenter();
         for(int i = 0; i < unitsTeam1.size(); i++){
             Unit currentUnit = unitsTeam1.get(i);
             currentUnit.loadUnit(i+1,0 );
@@ -193,7 +203,7 @@ public class Main extends PApplet {
         }
         for(int i = 0; i < unitsTeam2.size(); i++){
             Unit currentUnit = unitsTeam2.get(i);
-            currentUnit.loadUnit(i+1,7 );
+            currentUnit.loadUnit(i+1,9 );
             unitsTeam2InPlay.add(currentUnit);
             tiles.remove(currentUnit.posX + "," + currentUnit.posY);
             tiles.put(currentUnit.posX + "," + currentUnit.posY, "2");
@@ -201,8 +211,8 @@ public class Main extends PApplet {
     }
 
     public void fillTilesCenter(){
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
                 tiles.remove(j + "," + i);
                 tiles.put(j + "," + i, "0");
             }
@@ -216,9 +226,13 @@ public class Main extends PApplet {
         }
     }
 
-    public Unit unitFromParent(Unit parent){
-        Unit newUnit = new Unit();
-        newUnit.UnitWeights(parent.geneticAlgorithm(parent.statWeights));
-        return newUnit;
+    public void unitFromParent(Unit parent){
+        parent.UnitWeights(parent.geneticAlgorithm(parent.statWeights));
+    }
+
+    public PImage loadImage2(String imageName){
+        PImage returnImage = loadImage("Images\\"+imageName + ".png");
+        returnImage.resize(100,0);
+        return returnImage;
     }
 }
