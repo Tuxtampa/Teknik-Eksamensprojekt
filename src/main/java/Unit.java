@@ -21,6 +21,7 @@ public class Unit {
     int team;
     int ticksToNextMove = 0;
     boolean moved = false;                     //Used so units don't move more than once per tick.
+    boolean viewStats = false;
     float[] statWeights = {1,1,1,1};  //statWeights[0] = hp, statWeights[1] = damage, statWeights[2] = attackSpeed, statWeights[3] = range.
 
     void UnitGeneric(){
@@ -136,4 +137,5 @@ public class Unit {
         }
         return newWeights;
     }
+
 }
