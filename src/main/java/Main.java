@@ -264,6 +264,8 @@ public class Main extends PApplet {
         if(key == '5'){
             paused = !paused;
         }
+        if(key == '+')millisPerTick = (int) (millisPerTick*0.9f);
+        if(key == '-')millisPerTick = (int) (millisPerTick*1.1f);
     }
 
     @Override
