@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="org.processing:processing-complete:3.3.7" type="repository">
+    <properties maven-id="org.processing:processing-complete:3.3.7" packaging="pom" />
+    <CLASSES>
+      <root url="file://$MAVEN_REPOSITORY$/org/processing/processing-complete/3.3.7/processing-complete-3.3.7.pom" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

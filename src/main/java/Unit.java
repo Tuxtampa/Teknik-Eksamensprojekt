@@ -19,7 +19,8 @@ public class Unit {
     int posX = 1;
     int posY = 1;
     int team;
-    int ticksToNextMove = 0;
+    int currentTicksToNextMove = 10;
+    int ticksToNextMove = 10;
     boolean moved = false;                     //Used so units don't move more than once per tick.
     boolean viewStats = false;
     float[] statWeights = {1,1,1,1};  //statWeights[0] = hp, statWeights[1] = damage, statWeights[2] = attackSpeed, statWeights[3] = range.
@@ -41,9 +42,13 @@ public class Unit {
 
     void UnitWeights(float[] importedWeights){
         range = round(importedWeights[3]);
+        if(range > 1) type = "ranger";
         hp = 50*importedWeights[0];
+        if(hp < 10) hp = 10;
         damage = 5*importedWeights[1];
-        attackSpeed = 100*importedWeights[2];
+        if(damage > 10) type = "heavy";
+        ticksToNextMove = (int) (ticksToNextMove*importedWeights[2]);
+        currentTicksToNextMove = ticksToNextMove;
         statWeights = importedWeights;
     }
 

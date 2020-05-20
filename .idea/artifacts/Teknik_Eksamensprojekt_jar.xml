@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Teknik-Eksamensprojekt:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Teknik_Eksamensprojekt_jar</output-path>
+    <root id="archive" name="Teknik-Eksamensprojekt.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="Teknik-Eksamensprojekt" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/soundlibrary/sound/library/sound.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/processing/core/3.3.7/core-3.3.7.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src" />
+    </root>
+  </artifact>
+</component>

@@ -2,6 +2,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.sound.SoundFile;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,28 +17,52 @@ public class Main extends PApplet {
     ArrayList<Unit> unitsTeam2InPlay = new ArrayList<Unit>();
     public HashMap<String,String> tiles = new HashMap<>();
     Board bd = new Board();
-    int millisPerTick = 3000;
+    int millisPerTick = 3;
     int lastTick = 0;
     float xTiles = 10;
     float yTiles = 6;
     float xTileSpace = 1000;
     int yTileSpace = 600;
+    boolean playing = false;
     PImage unitImage = null;
     SoundFile sound1;
     boolean paused = false;
+    Unit stats = null;
+    PImage statImage = null;
+    String currentMenu = "mainmenuconcept1";
+    String map = "forest";
 
     public void draw(){
         //background(200);
-        bd.Board();
-        tileLines();
-        if((millis() - lastTick) > millisPerTick && !paused)tick();
+        //bd.Board();
+        if(playing){
+            tileLines();
+            if((millis() - lastTick) > millisPerTick && !paused)tick();
+        } else {
+            if(currentMenu.equals("mainmenuconcept2") || currentMenu.equals("mainmenuconcept1")) {
+                if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036) {
+                    currentMenu = "mainmenuconcept2";
+                } else {
+                    currentMenu = "mainmenuconcept1";
+                }
+            }
+            if (currentMenu.equals("mainmenuno") || currentMenu.equals("mainmenucave") ||currentMenu.equals("mainmenuforest") ){
+                if (mouseX+(mouseY*1.77f) > width){
+                    currentMenu = "mainmenucave";
+                } else {
+                    currentMenu = "mainmenuforest";
+                }
+            }
+            image(loadImage2(currentMenu),0,0);
+        }
+
     }
 
     private void tileLines() {
         translate((width-xTileSpace)/2f, (height-yTileSpace)/2f );
         for(int i = 0; i < xTiles; i++) {
             line(xTileSpace / xTiles*i, 0, xTileSpace / xTiles*i, yTileSpace);
-            if(xTiles-i > 2) {
+            if(xTiles-i > 3) {
                 line(0, 0 + (yTileSpace / yTiles * i), xTileSpace, 0 + (yTileSpace / yTiles * i));
             }
         }
@@ -68,12 +93,15 @@ public class Main extends PApplet {
         unitsTeam1InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         unitsTeam2InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         drawUnits();
+        if(stats != null)drawStats();
     }
 
     private void Action(ArrayList<Unit> unitsTeam2InPlay) {
+        System.out.println("action is coming");
+
         for(Unit currentUnit : unitsTeam2InPlay){
             //if(currentUnit.currentHp < 0) unitsTeam2InPlay.remove(currentUnit);
-            if(currentUnit.ticksToNextMove < 1) {
+            if(currentUnit.currentTicksToNextMove < 1) {
                 Unit target = getNearbyUnits(currentUnit);
                 if (target != null) {
                     System.out.println("move");
@@ -81,7 +109,8 @@ public class Main extends PApplet {
                 } else {
                     System.out.println("Target is null dummy");
                 }
-            }
+                currentUnit.currentTicksToNextMove = currentUnit.ticksToNextMove;
+            } else currentUnit.currentTicksToNextMove--;
         }
     }
 
@@ -168,20 +197,34 @@ public class Main extends PApplet {
         //loadImages();
         fillTileBoundaries();
         fillTilesCenter();
-        //loadSoundFiles();
         System.out.println("Setup ran");
+        loadStatImage();
     }
 
-    private void loadSoundFiles() {
-         sound1 = new SoundFile(this,"Sounds\\testSound.mp3");
+    public void loadStatImage(){
+        statImage = loadImage2("statScreen");
+        statImage.resize(0,200);
     }
 
+    private void loadSoundFiles(String name) {
+         sound1 = new SoundFile(this,"Sounds\\" + name + ".mp3");
+         sound1.play();
+    }
 
+    public void drawStats(){
+            image(statImage,460,850);
+    }
 
     public void drawUnits(){
-        PImage forestBackground = loadImage2("maps\\forest");
-        PImage caveBackground = loadImage2("maps\\cave");
-        background(forestBackground);
+        if(map.equals("cave")){
+            PImage cave = loadImage2("maps\\cave");
+            background(cave);
+        }
+        if(map.equals("forest")){
+            PImage forest = loadImage2("maps\\forest");
+            background(forest);
+        }
+
         tileLines();
         for(Unit currentUnit : unitsTeam1InPlay){
             image(loadImage2(currentUnit.faction + currentUnit.type + currentUnit.facing + currentUnit.level),currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f),currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f));
@@ -191,9 +234,7 @@ public class Main extends PApplet {
             fill(255,0,0);
             rect(currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f)+20,currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f)-10,60*(currentUnit.currentHp/currentUnit.hp*1f),10);
             popMatrix();
-            if(currentUnit.viewStats){
-                image(loadImage2("statScreen"),currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f)+120,currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f)-10);
-            }
+
         }
         for(Unit currentUnit : unitsTeam2InPlay){
             image(loadImage2(currentUnit.faction + currentUnit.type + currentUnit.facing + currentUnit.level),currentUnit.posX*(xTileSpace/xTiles)+((width-xTileSpace)/2f),currentUnit.posY*(yTileSpace/yTiles)+((height-yTileSpace)/2f));
@@ -222,9 +263,6 @@ public class Main extends PApplet {
                 unitFromParent(unit);
             }
         }
-        if(key == '4'){
-            sound1.play();
-        }
         if(key == '5'){
             paused = !paused;
         }
@@ -232,11 +270,47 @@ public class Main extends PApplet {
 
     @Override
     public void mouseClicked() {
-        int[] coordinates = whichDamnTileAmIOn();
-        try{
-            findUnit(coordinates[0], coordinates[1], 0).viewStats = !findUnit(coordinates[0], coordinates[1], 0).viewStats;
-        } catch (NullPointerException ne) {
-            ne.printStackTrace();
+        loadSoundFiles("button");
+        boolean uno = true;
+        if(playing) {
+            int[] coordinates = whichDamnTileAmIOn();
+            try {
+                stats = findUnit(coordinates[0], coordinates[1], 0);
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
+            }
+        } else if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036){
+            //loadSoundFiles("button");
+            currentMenu = "mainmenuno";
+            uno = false;
+        }
+        /*if (currentMenu.equals("mainmenuno") && uno){
+            if (mouseX+(mouseY*(width*1f/height*1f)) > width){
+                playing = true;
+                loadSoundFiles("testSound");
+            } else {
+                playing = true;
+                loadSoundFiles("testSound");
+            }
+        }
+
+         */
+        if(uno) {
+            if (currentMenu.equals("mainmenuno") || currentMenu.equals("mainmenucave") || currentMenu.equals("mainmenuforest")) {
+                if (mouseX + (mouseY * 1.77f) > width) {
+                    map = "cave";
+                    playing = true;
+                    System.out.println("playing the fucking cave please");
+                } else {
+                    map = "forest";
+                    playing = true;
+                    System.out.println("playing the fucking forest please");
+                }
+            }
+        }
+
+        if (mouseY > 0 && mouseY < 69 && mouseX > 1849 && mouseX < 20000){
+            exit();
         }
     }
 
@@ -244,7 +318,7 @@ public class Main extends PApplet {
         for (int i = 0; i < 1; i++) {
             Unit unit2 = new Unit();
             if(team == 1){
-                unit2.UnitFull("tree", "dude", "left");
+                unit2.UnitFull("human", "dude", "left");
                 unitsTeam1.add(unit2);
             }
             if(team == 2){
@@ -300,9 +374,12 @@ public class Main extends PApplet {
         PImage returnImage = loadImage("Images\\"+imageName + ".png");
         if(imageName.contains("maps")){
             returnImage.resize(width,height);
-        } else {
+        } else if (imageName.contains("tree")) {
             returnImage.resize(120, 0);
+        } if (imageName.contains("human")){
+            returnImage.resize(100,0);
         }
+        System.out.println(imageName + "loaded");
         return returnImage;
     }
 }
