@@ -1,8 +1,6 @@
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.sound.SoundFile;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,7 +8,6 @@ public class Main extends PApplet {
     public static void main(String[] args) {
         Main.main("Main");
     }
-    ArrayList<Unit> units = new ArrayList<Unit>();
     ArrayList<Unit> unitsTeam1 = new ArrayList<Unit>();
     ArrayList<Unit> unitsTeam2 = new ArrayList<Unit>();
     ArrayList<Unit> unitsTeam1InPlay = new ArrayList<Unit>();
@@ -24,21 +21,15 @@ public class Main extends PApplet {
     float xTileSpace = 1000;
     int yTileSpace = 600;
     boolean playing = false;
-    PImage unitImage = null;
     SoundFile sound1;
     SoundFile humanDeath;
     SoundFile treeDeath;
     boolean paused = false;
     Unit stats = null;
-    PImage statImage = null;
-    boolean playing2 = false;
     String currentMenu = "mainmenuconcept1";
     String map = "forest";
 
     public void draw(){
-        //background(200);
-        //bd.Board();
-        //if(musicPlaying)
         if(playing){
             tileLines();
             if((millis() - lastTick) > millisPerTick && !paused)tick();
@@ -88,10 +79,7 @@ public class Main extends PApplet {
         int tempMouseX = (int) (mouseX-xOffset);
         int tempMouseY = (int) (mouseY-yOffset);
         int xTile = (int) (tempMouseX/(xTileSpace / xTiles));
-        System.out.println("The xfloat would be " + tempMouseX/(xTileSpace / xTiles) + " While the integer is " + xTile);
         int yTile = (int) (tempMouseY/(yTileSpace / yTiles));
-        System.out.println("The yfloat would be " + tempMouseY/(yTileSpace / yTiles) + " While the integer is " + yTile);
-        System.out.println("According to the algorithm the position is " + xTile + "," + yTile);
         return new int[]{xTile, yTile};
     }
 
@@ -105,7 +93,6 @@ public class Main extends PApplet {
     }
 
     public void tick(){
-        System.out.println("tick" + frameCount%(10*frameRate) + " There are " + (unitsTeam1.size()+unitsTeam2.size()) + " units at ");
         Action(unitsTeam1InPlay);
         Action(unitsTeam2InPlay);
         lastTick = millis();
@@ -114,29 +101,22 @@ public class Main extends PApplet {
         unitsTeam1InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         unitsTeam2InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         drawUnits();
-        //if(stats != null)drawStats();
     }
 
     private void Action(ArrayList<Unit> unitsTeam2InPlay) {
-        System.out.println("action is coming");
 
         for(Unit currentUnit : unitsTeam2InPlay){
-            //if(currentUnit.currentHp < 0) unitsTeam2InPlay.remove(currentUnit);
             if(currentUnit.currentTicksToNextMove < 1) {
                 Unit target = getNearbyUnits(currentUnit);
                 if (target != null) {
                     System.out.println("move");
                     currentUnit.nextMove(target, tiles);
                 } else {
-                    System.out.println("Target is null dummy");
+                    System.out.println("Target is null");
                 }
                 currentUnit.currentTicksToNextMove = currentUnit.ticksToNextMove;
             } else currentUnit.currentTicksToNextMove--;
         }
-    }
-
-    public void playSound(String type, String fileName){
-
     }
 
     public void killOffTheWeakOnes(ArrayList<Unit> list){
@@ -176,7 +156,6 @@ public class Main extends PApplet {
                 }
         } catch (IndexOutOfBoundsException ie){
             ie.printStackTrace();
-            System.out.println("REEEEEEEEEEEEEEEEEE");
             return null;
         }
         return returnUnit;
@@ -216,7 +195,6 @@ public class Main extends PApplet {
     }
 
     public void setup(){
-        //loadImages();
         loadAllTheDamnImages();
         fillTileBoundaries();
         fillTilesCenter();
@@ -236,19 +214,12 @@ public class Main extends PApplet {
          treeDeath = new SoundFile(this,"Sounds\\yikes.mp3");
     }
 
-    /*public void drawStats(){
-            image(statImage,460,850);
-    }
-
-     */
-
     public void drawUnits(){
         if(map.equals("cave")){
             PImage cave = loadImage2("cave");
             background(loadImage2("cave"));
         }
         if(map.equals("forest")){
-            //PImage forest = loadImage2("forest");
             background(loadImage2("forest"));
         }
 
@@ -309,27 +280,15 @@ public class Main extends PApplet {
         }
         if(!playing) {
             if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036) {
-                //loadSoundFiles("button");
                 currentMenu = "mainmenuno";
                 uno = false;
             }
             if (mouseY > 600 && mouseY < 720 && mouseX > 859 && mouseX < 1036) {
-                //loadSoundFiles("button");
                 currentMenu = "mainmenuinfo";
                 uno = false;
             }
         }
-        /*if (currentMenu.equals("mainmenuno") && uno){
-            if (mouseX+(mouseY*(width*1f/height*1f)) > width){
-                playing = true;
-                loadSoundFiles("testSound");
-            } else {
-                playing = true;
-                loadSoundFiles("testSound");
-            }
-        }
 
-         */
         if(uno) {
             if (currentMenu.equals("mainmenuno") || currentMenu.equals("mainmenucave") || currentMenu.equals("mainmenuforest")) {
                 if (mouseX + (mouseY * 1.77f) > width) {

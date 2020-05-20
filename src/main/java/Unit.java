@@ -65,7 +65,6 @@ public class Unit {
             System.out.println(posX + " " + posY + " attacking " + target.posX + " " + target.posY + "from " + target.currentHp + " to ");
             target.currentHp -= damage();
             System.out.println(target.currentHp);
-            //attackAnimation(posX, posY, target.posX, target.posY);    TODO
         } else {
             moved = false;
             if(posY > target.posY){
@@ -89,7 +88,6 @@ public class Unit {
             }
                 }
             System.out.println(posX + " " + posY);
-            //moveAnimation(posX, posY, signum(target.posX), signum(target.posY); TODO
         }
 
     void topFree(HashMap<String,String> tiles, int tempTeam) {

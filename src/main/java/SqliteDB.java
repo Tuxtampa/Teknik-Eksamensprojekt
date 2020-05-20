@@ -20,7 +20,6 @@ public class SqliteDB {
 
     public void closeConnection() {
         try {
-
             System.out.println("Disconnected from database");
         } catch (Exception e) {
             e.printStackTrace();
