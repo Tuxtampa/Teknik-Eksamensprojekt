@@ -16,8 +16,9 @@ public class Main extends PApplet {
     ArrayList<Unit> unitsTeam1InPlay = new ArrayList<Unit>();
     ArrayList<Unit> unitsTeam2InPlay = new ArrayList<Unit>();
     public HashMap<String,String> tiles = new HashMap<>();
+    public HashMap<String,PImage> images = new HashMap<>();
     Board bd = new Board();
-    int millisPerTick = 3;
+    int millisPerTick = 100;
     int lastTick = 0;
     float xTiles = 10;
     float yTiles = 6;
@@ -39,13 +40,16 @@ public class Main extends PApplet {
             tileLines();
             if((millis() - lastTick) > millisPerTick && !paused)tick();
         } else {
-            if(currentMenu.equals("mainmenuconcept2") || currentMenu.equals("mainmenuconcept1")) {
+            if(currentMenu.equals("mainmenuconcept2") || currentMenu.equals("mainmenuconcept1") || currentMenu.equals("mainmenuconcept3")) {
                 if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036) {
                     currentMenu = "mainmenuconcept2";
+                } else if (mouseY > 600 && mouseY < 720 && mouseX > 859 && mouseX < 1036) {
+                    currentMenu = "mainmenuconcept3";
                 } else {
                     currentMenu = "mainmenuconcept1";
                 }
             }
+
             if (currentMenu.equals("mainmenuno") || currentMenu.equals("mainmenucave") ||currentMenu.equals("mainmenuforest") ){
                 if (mouseX+(mouseY*1.77f) > width){
                     currentMenu = "mainmenucave";
@@ -53,7 +57,12 @@ public class Main extends PApplet {
                     currentMenu = "mainmenuforest";
                 }
             }
-            image(loadImage2(currentMenu),0,0);
+            try {
+                image(loadImage2(currentMenu),0,0);
+            } catch (NullPointerException nice) {
+                System.out.println("something wrong with " + currentMenu);
+                nice.printStackTrace();
+            }
         }
 
     }
@@ -195,15 +204,10 @@ public class Main extends PApplet {
 
     public void setup(){
         //loadImages();
+        loadAllTheDamnImages();
         fillTileBoundaries();
         fillTilesCenter();
         System.out.println("Setup ran");
-        loadStatImage();
-    }
-
-    public void loadStatImage(){
-        statImage = loadImage2("statScreen");
-        statImage.resize(0,200);
     }
 
     private void loadSoundFiles(String name) {
@@ -217,12 +221,12 @@ public class Main extends PApplet {
 
     public void drawUnits(){
         if(map.equals("cave")){
-            PImage cave = loadImage2("maps\\cave");
-            background(cave);
+            PImage cave = loadImage2("cave");
+            background(loadImage2("cave"));
         }
         if(map.equals("forest")){
-            PImage forest = loadImage2("maps\\forest");
-            background(forest);
+            //PImage forest = loadImage2("forest");
+            background(loadImage2("forest"));
         }
 
         tileLines();
@@ -279,10 +283,18 @@ public class Main extends PApplet {
             } catch (NullPointerException ne) {
                 ne.printStackTrace();
             }
-        } else if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036){
-            //loadSoundFiles("button");
-            currentMenu = "mainmenuno";
-            uno = false;
+        }
+        if(!playing) {
+            if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036) {
+                //loadSoundFiles("button");
+                currentMenu = "mainmenuno";
+                uno = false;
+            }
+            if (mouseY > 600 && mouseY < 720 && mouseX > 859 && mouseX < 1036) {
+                //loadSoundFiles("button");
+                currentMenu = "mainmenuinfo";
+                uno = false;
+            }
         }
         /*if (currentMenu.equals("mainmenuno") && uno){
             if (mouseX+(mouseY*(width*1f/height*1f)) > width){
@@ -311,6 +323,10 @@ public class Main extends PApplet {
 
         if (mouseY > 0 && mouseY < 69 && mouseX > 1849 && mouseX < 20000){
             exit();
+        }
+        if (mouseY > 0 && mouseY < 69 && mouseX > 0 && mouseX < 72){
+            currentMenu = "mainmenuconcept1";
+            playing = false;
         }
     }
 
@@ -370,9 +386,9 @@ public class Main extends PApplet {
         parent.UnitWeights(parent.geneticAlgorithm(parent.statWeights));
     }
 
-    public PImage loadImage2(String imageName){
+    public PImage loadImage1(String imageName){
         PImage returnImage = loadImage("Images\\"+imageName + ".png");
-        if(imageName.contains("maps")){
+        if(imageName.contains("forest") || imageName.contains("cave")){
             returnImage.resize(width,height);
         } else if (imageName.contains("tree")) {
             returnImage.resize(120, 0);
@@ -381,5 +397,19 @@ public class Main extends PApplet {
         }
         System.out.println(imageName + "loaded");
         return returnImage;
+    }
+
+
+
+    public PImage loadImage2(String imageName){
+        return images.get(imageName);
+    }
+
+    public void loadAllTheDamnImages(){
+        String[] imageNames = {"mainmenuconcept3","mainmenuinfo","humandudeleft1", "humanduderight1", "humanheavyleft1", "humanheavyright1", "humanrangerleft1", "humanrangerright1", "mainmenu", "mainmenucave","mainmenuforest","mainmenuconcept1","mainmenuconcept2","mainmenuno","treedudeleft1","treeduderight1","treeheavyleft1","treeheavyright1","treerangerleft1","treerangerright1","cave","forest"};
+        for(String imageName : imageNames){
+            images.put(imageName, loadImage1(imageName));
+            System.out.println(imageName + " loaded");
+        }
     }
 }
