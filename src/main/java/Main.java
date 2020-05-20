@@ -17,8 +17,7 @@ public class Main extends PApplet {
     ArrayList<Unit> unitsTeam2InPlay = new ArrayList<Unit>();
     public HashMap<String,String> tiles = new HashMap<>();
     public HashMap<String,PImage> images = new HashMap<>();
-    Board bd = new Board();
-    int millisPerTick = 100;
+    int millisPerTick = 80;
     int lastTick = 0;
     float xTiles = 10;
     float yTiles = 6;
@@ -27,15 +26,19 @@ public class Main extends PApplet {
     boolean playing = false;
     PImage unitImage = null;
     SoundFile sound1;
+    SoundFile humanDeath;
+    SoundFile treeDeath;
     boolean paused = false;
     Unit stats = null;
     PImage statImage = null;
+    boolean playing2 = false;
     String currentMenu = "mainmenuconcept1";
     String map = "forest";
 
     public void draw(){
         //background(200);
         //bd.Board();
+        //if(musicPlaying)
         if(playing){
             tileLines();
             if((millis() - lastTick) > millisPerTick && !paused)tick();
@@ -92,6 +95,15 @@ public class Main extends PApplet {
         return new int[]{xTile, yTile};
     }
 
+    public void death(String faction){
+        if (faction.equals("human")) {
+            humanDeath.play();
+        }
+        if (faction.equals("tree")) {
+            treeDeath.play();
+        }
+    }
+
     public void tick(){
         System.out.println("tick" + frameCount%(10*frameRate) + " There are " + (unitsTeam1.size()+unitsTeam2.size()) + " units at ");
         Action(unitsTeam1InPlay);
@@ -102,7 +114,7 @@ public class Main extends PApplet {
         unitsTeam1InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         unitsTeam2InPlay.removeIf(currentUnit -> currentUnit.currentHp < 0.1);
         drawUnits();
-        if(stats != null)drawStats();
+        //if(stats != null)drawStats();
     }
 
     private void Action(ArrayList<Unit> unitsTeam2InPlay) {
@@ -132,6 +144,7 @@ public class Main extends PApplet {
             if(currentUnit.currentHp < 0.1){
                 tiles.remove(currentUnit.posX + "," + currentUnit.posY);
                 tiles.put(currentUnit.posX + "," + currentUnit.posY, "0");
+                death(currentUnit.faction);
             }
         }
     }
@@ -207,17 +220,27 @@ public class Main extends PApplet {
         loadAllTheDamnImages();
         fillTileBoundaries();
         fillTilesCenter();
+        startMusic("menu");
         System.out.println("Setup ran");
+    }
+
+    public void startMusic(String theme){
+        SoundFile music1 = new SoundFile(this, "Sounds\\" + theme + "music.mp3");
+        music1.loop();
     }
 
     private void loadSoundFiles(String name) {
          sound1 = new SoundFile(this,"Sounds\\" + name + ".mp3");
          sound1.play();
+         humanDeath = new SoundFile(this,"Sounds\\oof.mp3");
+         treeDeath = new SoundFile(this,"Sounds\\yikes.mp3");
     }
 
-    public void drawStats(){
+    /*public void drawStats(){
             image(statImage,460,850);
     }
+
+     */
 
     public void drawUnits(){
         if(map.equals("cave")){
@@ -333,11 +356,11 @@ public class Main extends PApplet {
     public void createUnit(int team) {
         for (int i = 0; i < 1; i++) {
             Unit unit2 = new Unit();
-            if(team == 1){
+            if(team == 1 && unitsTeam1.size() < 4){
                 unit2.UnitFull("human", "dude", "left");
                 unitsTeam1.add(unit2);
             }
-            if(team == 2){
+            if(team == 2 && unitsTeam2.size() < 4){
                 unit2.UnitFull("tree", "dude", "right");
                 unitsTeam2.add(unit2);
             }
