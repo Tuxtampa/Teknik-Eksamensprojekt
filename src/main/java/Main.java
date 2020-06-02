@@ -32,7 +32,9 @@ public class Main extends PApplet {
     public void draw(){
         if(playing){
             tileLines();
-            if((millis() - lastTick) > millisPerTick && !paused)tick();
+            if((millis() - lastTick) > millisPerTick && !paused) {
+                tick();
+            }
         } else {
             if(currentMenu.equals("mainmenuconcept2") || currentMenu.equals("mainmenuconcept1") || currentMenu.equals("mainmenuconcept3")) {
                 if (mouseY > 431 && mouseY < 552 && mouseX > 859 && mouseX < 1036) {
@@ -210,8 +212,8 @@ public class Main extends PApplet {
     private void loadSoundFiles(String name) {
          sound1 = new SoundFile(this,"Sounds\\" + name + ".mp3");
          sound1.play();
-         humanDeath = new SoundFile(this,"Sounds\\oof.mp3");
-         treeDeath = new SoundFile(this,"Sounds\\yikes.mp3");
+         humanDeath = new SoundFile(this,"Sounds\\humanDeath.mp3");
+         treeDeath = new SoundFile(this,"Sounds\\treeDeath.mp3");
     }
 
     public void drawUnits(){

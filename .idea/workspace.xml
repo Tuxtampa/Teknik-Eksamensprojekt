@@ -55,7 +55,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/soundlibrary/sound/library" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
@@ -135,6 +135,7 @@
       <workItem from="1589743979906" duration="14748000" />
       <workItem from="1589805668434" duration="6181000" />
       <workItem from="1589897563263" duration="45806000" />
+      <workItem from="1591045704351" duration="4362000" />
     </task>
     <task id="LOCAL-00001" summary="Class related stuff">
       <created>1584436629758</created>
@@ -171,10 +172,6 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1154" y="328" key="#BuildArtifactsBeforeRunChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1589922918417" />
-    <state x="361" y="72" key="#Project_Structure" timestamp="1582270003552">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="361" y="72" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1582270003552" />
     <state x="598" y="180" width="1092" height="686" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589924702260">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -187,11 +184,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="561" y="209" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589924268228" />
-    <state x="773" y="380" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1589938289582">
+    <state x="773" y="380" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1591045816003">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="618" y="301" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1536.824@0.0.1536.824" timestamp="1589743993444" />
-    <state x="773" y="380" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589938289582" />
+    <state x="773" y="380" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1591045816003" />
     <state x="591" y="196" key="FileChooserDialogImpl" timestamp="1589931281081">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -245,11 +242,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="626" y="165" key="Maven.ArtifactSearchDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589931187506" />
-    <state x="311" y="0" key="SettingsEditor" timestamp="1589931284629">
+    <state x="311" y="0" key="SettingsEditor" timestamp="1591046546825">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="465" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1589816689904" />
-    <state x="311" y="0" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1589931284629" />
+    <state x="311" y="0" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1591046546825" />
     <state x="623" y="387" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1589931270771">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
